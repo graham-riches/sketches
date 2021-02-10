@@ -1,13 +1,29 @@
-#include "ofMain.h"
+/**
+ * \file main.cpp
+ * \author Graham Riches (graham.riches@live.com)
+ * \brief sketch of the day
+ * \version 0.1
+ * \date 2021-02-10
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+ */
+
+/********************************** Includes *******************************************/
 #include "ofApp.h"
+#include "ofMain.h"
+#include <memory>
 
-//========================================================================
-int main( ){
-	ofSetupOpenGL(1024,768,OF_WINDOW);			// <-------- setup the GL context
+/********************************** Functions *******************************************/
+/**
+ * @brief main sketch application 
+ * @return 
+*/
+int main(int argc, char* argv[]) {
+    //!< let open frameworks handle setting up OpenGL
+    ofSetupOpenGL(1024, 768, OF_WINDOW);
 
-	// this kicks off the running of my app
-	// can be OF_WINDOW or OF_FULLSCREEN
-	// pass in width and height too:
-	ofRunApp(new ofApp());
-
+    //!< start the application event loop
+    auto app = std::make_unique<ofApp>();
+    ofRunApp(app.get());
 }
