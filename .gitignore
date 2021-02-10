@@ -30,3 +30,13 @@
 *.exe
 *.out
 *.app
+
+# Debug Files
+*.pdb
+
+# Build Files
+*bin*
+*obj*
+
+# Visual Studio Stuff
+*.vs*
