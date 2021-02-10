@@ -21,7 +21,9 @@
 */
 int main(int argc, char* argv[]) {
     //!< let open frameworks handle setting up OpenGL
-    ofSetupOpenGL(1024, 768, OF_WINDOW);
+    ofGLWindowSettings window_settings;
+    window_settings.setGLVersion(3, 2);
+    ofCreateWindow(window_settings);    
 
     //!< start the application event loop
     auto app = std::make_unique<ofApp>();
