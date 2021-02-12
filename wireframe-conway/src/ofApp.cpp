@@ -11,6 +11,7 @@
 
 #include <filesystem>
 #include <algorithm>
+#include "conway.h"
 #include "ofApp.h"
 
 /**
@@ -26,6 +27,7 @@ void ofApp::setup(){
 
 
     _image.allocate(80, 60, OF_IMAGE_GRAYSCALE);
+    
 
     int planeWidth = ofGetWidth();
     int planeHeight = ofGetHeight();
@@ -44,9 +46,10 @@ void ofApp::update(){
     ofPixels& pixels = _image.getPixels();
     const auto width = _image.getWidth();
     const auto height = _image.getHeight();
+    auto grid = random_int_grid(height, width);
     for (int row = 0; row < height; row++) {
         for (int column = 0; column < width; column++) {
-            pixels[static_cast<long long int>(row * width + column)] = sin(ofGetElapsedTimef()*column)*255;
+            pixels[static_cast<long long int>(row * width + column)] = grid[row][column];            
         }
     }
     _image.update();

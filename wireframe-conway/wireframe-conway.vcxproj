@@ -198,6 +198,7 @@
     <ClCompile Include="..\..\open-frameworks\addons\ofxVectorGraphics\libs\CreEPS.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\conway.h" />
     <ClInclude Include="src\ofApp.h" />
     <ClInclude Include="..\..\open-frameworks\addons\ofxGui\src\ofxBaseGui.h" />
     <ClInclude Include="..\..\open-frameworks\addons\ofxGui\src\ofxButton.h" />
