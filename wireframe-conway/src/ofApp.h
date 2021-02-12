@@ -13,6 +13,7 @@
 
 /********************************** Includes *******************************************/
 #include "ofMain.h"
+#include "conway.h"
 
 /********************************** Types *******************************************/
 class ofApp : public ofBaseApp {
@@ -37,4 +38,5 @@ class ofApp : public ofBaseApp {
     ofShader _shader;
     ofPlanePrimitive _plane;
     ofImage _image;
+    game_of_life _conway;
 };

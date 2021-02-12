@@ -11,7 +11,6 @@
 
 #include <filesystem>
 #include <algorithm>
-#include "conway.h"
 #include "ofApp.h"
 
 /**
@@ -24,8 +23,8 @@ void ofApp::setup(){
     auto parent_path = path.parent_path();
     std::filesystem::path shader_path = parent_path / std::filesystem::path{"shaders"};    
     _shader.load(shader_path / std::filesystem::path{"shadersGL3/shader"});
-
-
+    
+    _conway = game_of_life{random_boolean_grid(80, 60)};
     _image.allocate(80, 60, OF_IMAGE_GRAYSCALE);
     
 
@@ -46,10 +45,10 @@ void ofApp::update(){
     ofPixels& pixels = _image.getPixels();
     const auto width = _image.getWidth();
     const auto height = _image.getHeight();
-    auto grid = random_int_grid(height, width);
+    auto current_generation = _conway.next_generation();
     for (int row = 0; row < height; row++) {
         for (int column = 0; column < width; column++) {
-            pixels[static_cast<long long int>(row * width + column)] = grid[row][column];            
+            pixels[static_cast<long long int>(row * width + column)] = current_generation[row][column] * 255;
         }
     }
     _image.update();
