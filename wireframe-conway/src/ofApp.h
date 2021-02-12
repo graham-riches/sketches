@@ -36,4 +36,5 @@ class ofApp : public ofBaseApp {
   private:
     ofShader _shader;
     ofPlanePrimitive _plane;
+    ofImage _image;
 };
