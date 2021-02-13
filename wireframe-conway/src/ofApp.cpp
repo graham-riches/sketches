@@ -42,10 +42,7 @@ void application::setup() {
     auto path = std::filesystem::current_path();
     auto parent_path = path.parent_path();
     std::filesystem::path shader_path = parent_path / std::filesystem::path{"shaders"};
-    _displacement_shader.load(shader_path / std::filesystem::path{"shadersGL3/shader"});
-    
-    _plane.set(800, 600, 160, 120, OF_PRIMITIVE_TRIANGLES);
-    _plane.mapTexCoordsFromTexture(_image.getTexture());
+    _displacement_shader.load(shader_path / std::filesystem::path{"shadersGL3/shader"});    
 }
 
 /**
@@ -81,7 +78,7 @@ void application::draw() {
     _image.getTexture().bind();
     
     auto time = ofGetElapsedTimef();
-    auto percent_y = ofClamp(sin(time), 0, 1) * _scale;
+    auto percent_y = ofClamp(0.5 * sin(time) + 0.5, 0, 1) * _scale;
 
     //!< start the shader
     _displacement_shader.begin();

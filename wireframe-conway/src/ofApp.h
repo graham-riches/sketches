@@ -22,7 +22,7 @@ constexpr int grid_density = 20;
 /********************************** Types *******************************************/
 class application : public ofBaseApp {
   public:
-    application(int width, int height, int wireframe_resolution = 2, uint64_t sample_rate = 100, float scale=30);
+    application(int width, int height, int wireframe_resolution = 2, uint64_t sample_rate = 100, float scale=40);
 
     //!< open frameworks application interface functions
     void setup();
