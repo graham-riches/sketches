@@ -14,14 +14,20 @@
 /********************************** Includes *******************************************/
 #include "ofMain.h"
 #include "conway.h"
+#include <cstdint>
+
+/********************************** Constants *******************************************/
+constexpr int grid_density = 20;
 
 /********************************** Types *******************************************/
-class ofApp : public ofBaseApp {
+class application : public ofBaseApp {
   public:
+    application(int width, int height, int wireframe_resolution = 2, uint64_t sample_rate = 100, float scale=30);
+
+    //!< open frameworks application interface functions
     void setup();
     void update();
     void draw();
-
     void keyPressed(int key);
     void keyReleased(int key);
     void mouseMoved(int x, int y);
@@ -35,8 +41,13 @@ class ofApp : public ofBaseApp {
     void gotMessage(ofMessage msg);
 
   private:
-    ofShader _shader;
-    ofPlanePrimitive _plane;
+    ofShader _displacement_shader;    
+    ofPlanePrimitive _plane;    
     ofImage _image;
-    game_of_life _conway;
+    game_of_life _conway;    
+    int _width;
+    int _height;
+    float _scale;
+    uint64_t _sample_rate_ms;
+    uint64_t _last_sample_time;
 };

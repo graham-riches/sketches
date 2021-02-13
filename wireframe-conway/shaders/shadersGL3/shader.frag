@@ -2,11 +2,11 @@
 
 uniform sampler2DRect tex0;
 
-in vec2 texCoordVarying;
+in vec2 texture_coordinate;
 
-out vec4 outputColor;
+out vec4 output_color;
  
 void main()
 {
-    outputColor = texture(tex0, texCoordVarying);
+    output_color = texture(tex0, texture_coordinate);
 }

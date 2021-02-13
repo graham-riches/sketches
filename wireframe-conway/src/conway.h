@@ -47,16 +47,17 @@ std::vector<std::vector<T>> random_seed(int width, int height, std::function<T(v
  * 
  * \param width how many columns in the grid
  * \param height how many row in the grid
+ * \param density seeding density
  * \retval game_of_life 
  */
-inline std::vector<std::vector<bool>> random_boolean_grid(int width, int height) {    
+inline std::vector<std::vector<bool>> random_boolean_grid(int width, int height, int density=30) {    
     std::random_device random_device;
     std::mt19937 random_engine(random_device());
-    std::uniform_int_distribution<int> bool_distribution(0, 1);
+    std::uniform_int_distribution<int> distribution(0, 100);
 
     //!< lambda to bind the arguments for the distribution
     std::function<bool(void)> get_bool = [&] () mutable {         
-        return static_cast<bool>(bool_distribution(random_engine)); 
+        return static_cast<bool>(distribution(random_engine) <= density); 
     };    
     return random_seed(width, height, get_bool);
 }
@@ -94,7 +95,10 @@ class game_of_life {
      * \param seed arena seed that contains the initial generation     
      */
     game_of_life(std::vector<std::vector<bool>>&& seed)
-    : _tiles(std::move(seed)) {}
+    : _tiles(std::move(seed)) {
+        _rows = _tiles.size();
+        _columns = (_rows >= 1 ) ? _tiles[0].size() : 0;
+    }
 
     /**
      * \brief apply the game of life rules and return a reference to the next generation
@@ -102,9 +106,56 @@ class game_of_life {
      * \return next generation
     */
     std::vector<std::vector<bool>>& next_generation() {
+        std::vector<std::vector<bool>> new_tiles = _tiles;
+
+        for (int i = 0; i < _rows; i++) {
+            for (int j = 0; j < _columns; j++) {
+                new_tiles[i][j] = apply_rules(_tiles[i][j], count_live_neighbours(i, j));
+            }
+        }
+        _tiles = new_tiles;
         return _tiles;
     }
 
   private:
+    /**
+     * \brief count the number of live neighbours a cell has
+     * \param row the row index of the cell
+     * \param column the column index of the cell
+     * \return count of live neighbours
+    */
+    int count_live_neighbours(int row, int column) {
+        //!< get the neighbour bounding box
+        int start_row = (row >= 1) ? row - 1 : row;
+        int end_row  = (row < _rows - 1) ? row + 1 : _rows - 1;
+        int start_column = (column >= 1) ? column - 1 : column;
+        int end_column = (column < _columns - 1) ? column + 1 : _columns - 1;
+
+        //!< get all the neighbours and count the total
+        int count = 0;
+        for (int i = start_row; i <= end_row; i++){
+            for (int j = start_column; j <= end_column; j++) {
+                if ((i != row) || (j != column)){
+                    count += _tiles[i][j];
+                }                
+            }
+        }
+        return count;
+    }
+
+    /**
+     * \brief apply the game of life rules to get a new state
+     * \param alive current cell state
+     * \param live_neighbours how many live neighbour cells there are
+     * \return the new state
+    */
+    bool apply_rules(bool alive, int live_neighbours) {
+        return alive && ((live_neighbours == 3) || (live_neighbours == 2)) ? true
+             : !alive && (live_neighbours == 3) ? true
+             : false;
+    }
+
+    int _rows;
+    int _columns;
     std::vector<std::vector<bool>> _tiles;    
 };

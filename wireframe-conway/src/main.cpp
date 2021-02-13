@@ -19,13 +19,13 @@
  * @brief main sketch application 
  * @return 
 */
-int main(int argc, char* argv[]) {
-    //!< let open frameworks handle setting up OpenGL
+int main(int argc, char* argv[]) {    
     ofGLWindowSettings window_settings;
     window_settings.setGLVersion(3, 2);
+    window_settings.setSize(1600, 1200);
     ofCreateWindow(window_settings);    
 
     //!< start the application event loop
-    auto app = std::make_unique<ofApp>();
+    auto app = std::make_unique<application>(80, 60);
     ofRunApp(app.get());
 }

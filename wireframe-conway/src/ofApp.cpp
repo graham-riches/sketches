@@ -9,61 +9,84 @@
  * 
  */
 
-#include <filesystem>
-#include <algorithm>
 #include "ofApp.h"
+#include <algorithm>
+#include <filesystem>
+
 
 /**
- * @brief 
- * 
+ * \brief constructor for game of life application
+ * \param width width in tiles
+ * \param height in tiles
+ * \param wireframe_resolution how many wireframes per conway grid location
+ * \param sample_rate time sample rate in ms
+ * \param scale height scale for rendering
 */
-void ofApp::setup(){
-    //!< I hate pathing...
+application::application(int width, int height, int wireframe_resolution, uint64_t sample_rate, float scale)
+: _conway(game_of_life{random_boolean_grid(height, width, grid_density)})
+, _width(width)
+, _height(height)
+, _sample_rate_ms(sample_rate)
+, _scale(scale)
+, _last_sample_time(0)
+{
+    _image.allocate(height, width, OF_IMAGE_GRAYSCALE);
+    _plane.set(1200, 900, height*wireframe_resolution, height*wireframe_resolution, OF_PRIMITIVE_TRIANGLES);
+    _plane.mapTexCoordsFromTexture(_image.getTexture());
+}   
+
+/**
+ * \brief open frameworks setup function that runs prior to the main event loop
+ */
+void application::setup() {    
     auto path = std::filesystem::current_path();
     auto parent_path = path.parent_path();
-    std::filesystem::path shader_path = parent_path / std::filesystem::path{"shaders"};    
-    _shader.load(shader_path / std::filesystem::path{"shadersGL3/shader"});
+    std::filesystem::path shader_path = parent_path / std::filesystem::path{"shaders"};
+    _displacement_shader.load(shader_path / std::filesystem::path{"shadersGL3/shader"});
     
-    _conway = game_of_life{random_boolean_grid(80, 60)};
-    _image.allocate(80, 60, OF_IMAGE_GRAYSCALE);
-    
-
-    int planeWidth = ofGetWidth();
-    int planeHeight = ofGetHeight();
-    int planeGridSize = 10;
-    int planeColums = planeWidth / planeGridSize;
-    int planeRows = planeHeight / planeGridSize;
-        
-    _plane.set(800, 600, 80, 60, OF_PRIMITIVE_TRIANGLES);
+    _plane.set(800, 600, 160, 120, OF_PRIMITIVE_TRIANGLES);
     _plane.mapTexCoordsFromTexture(_image.getTexture());
 }
 
 /**
- * @brief 
-*/
-void ofApp::update(){
-    ofPixels& pixels = _image.getPixels();
-    const auto width = _image.getWidth();
-    const auto height = _image.getHeight();
-    auto current_generation = _conway.next_generation();
-    for (int row = 0; row < height; row++) {
-        for (int column = 0; column < width; column++) {
-            pixels[static_cast<long long int>(row * width + column)] = current_generation[row][column] * 255;
-        }
-    }
-    _image.update();
+ * \brief frame update method
+ */
+void application::update() {
+    const auto elapsed_time_ms = ofGetElapsedTimeMillis();
+    if ((elapsed_time_ms - _last_sample_time) / _sample_rate_ms) {
+        //!< update timestamp
+        _last_sample_time = elapsed_time_ms;
 
+        //!< get the next generation
+        auto current_generation = _conway.next_generation();
+        
+        //!< update the image to draw it
+        ofPixels& pixels = _image.getPixels();
+        const auto width = _image.getWidth();
+        const auto height = _image.getHeight();        
+        for ( uint64_t row = 0; row < height; row++ ) {
+            for ( uint64_t column = 0; column < width; column++ ) {
+                pixels[row * static_cast<int>(width) + column] = current_generation[row][column]*255;
+            }
+        }
+        _image.update();
+    }
 }
 
 /**
- * @brief 
-*/
-void ofApp::draw(){
+ * \brief main method to render the scene
+ */
+void application::draw() {
     //!< bind the texture to the shader
     _image.getTexture().bind();
+    
+    auto time = ofGetElapsedTimef();
+    auto percent_y = ofClamp(sin(time), 0, 1) * _scale;
 
     //!< start the shader
-    _shader.begin();
+    _displacement_shader.begin();
+
+    _displacement_shader.setUniform1f("scale", percent_y);
 
     //!< push the current local coordinate system to move to a new relative one
     ofPushMatrix();
@@ -81,46 +104,27 @@ void ofApp::draw(){
     _plane.drawWireframe();
 
     ofPopMatrix();
-    _shader.end();
+    _displacement_shader.end();
 }
 
-void ofApp::keyPressed(int key){
+void application::keyPressed(int key) { }
 
-}
+void application::keyReleased(int key) { }
 
-void ofApp::keyReleased(int key){
+void application::mouseMoved(int x, int y) { }
 
-}
+void application::mouseDragged(int x, int y, int button) { }
 
-void ofApp::mouseMoved(int x, int y){
+void application::mousePressed(int x, int y, int button) { }
 
-}
+void application::mouseReleased(int x, int y, int button) { }
 
-void ofApp::mouseDragged(int x, int y, int button){
+void application::windowResized(int w, int h) { }
 
-}
+void application::gotMessage(ofMessage msg) { }
 
-void ofApp::mousePressed(int x, int y, int button){
+void application::dragEvent(ofDragInfo dragInfo) { }
 
-}
+void application::mouseEntered(int x, int y) { }
 
-void ofApp::mouseReleased(int x, int y, int button){
-
-}
-
-
-void ofApp::windowResized(int w, int h){
-
-}
-
-void ofApp::gotMessage(ofMessage msg){
-
-}
-
-void ofApp::dragEvent(ofDragInfo dragInfo){ 
-
-}
-
-void ofApp::mouseEntered(int x, int y) {}
-
-void ofApp::mouseExited(int x, int y) {}
+void application::mouseExited(int x, int y) { }
