@@ -42,4 +42,6 @@ class application : public ofBaseApp {
     ofImage _image;    
     int _width;
     int _height;
+    int _x_origin;
+    int _y_origin;
 };

@@ -12,6 +12,8 @@
 /********************************** Includes *******************************************/
 #include "ofApp.h"
 #include <filesystem>
+#include <cmath>
+#include <cstdlib>
 
 
 /********************************** Function Definitions *******************************************/
@@ -24,6 +26,8 @@
 application::application(int width, int height) 
 : _width(width)
 , _height(height) {
+    _x_origin = width / 2;
+    _y_origin = height / 2;
     _image.allocate(height, width, OF_IMAGE_GRAYSCALE);
     _plane.set(1200, 900, height, height, OF_PRIMITIVE_TRIANGLES);
     _plane.mapTexCoordsFromTexture(_image.getTexture());
@@ -44,13 +48,17 @@ void application::setup() {
  * \brief update method to draw a new frame
  */
 void application::update() {     
-    //!< update the image to draw it
+    auto time = ofGetElapsedTimef();
+
     ofPixels& pixels = _image.getPixels();
     const auto width = _image.getWidth();
     const auto height = _image.getHeight();        
     for ( uint64_t row = 0; row < height; row++ ) {
         for ( uint64_t column = 0; column < width; column++ ) {
-            pixels[row * static_cast<int>(width) + column] = 255;
+            uint64_t x = std::llabs(column - _x_origin);
+            uint64_t y = std::llabs(row - _y_origin);
+            auto r = sqrtf(powf(x, 2.0) + powf(y, 2.0));
+            pixels[row * static_cast<int>(width) + column] = (0.5*sin(0.20*r) + 0.5)*255;
         }
     }
     _image.update();    
@@ -66,6 +74,8 @@ void application::draw() {
 
     //!< start the shader
     _displacement_shader.begin();    
+
+    _displacement_shader.setUniform1f("u_scale", 50);
 
     //!< push the current local coordinate system to move to a new relative one
     ofPushMatrix();
