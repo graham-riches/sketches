@@ -11,12 +11,27 @@
 
 /********************************** Includes *******************************************/
 #include "ofApp.h"
+#include "ripple.hpp"
 #include <filesystem>
 #include <cmath>
 #include <cstdlib>
 
 
 /********************************** Function Definitions *******************************************/
+/**
+ * \brief generic function to turn calculate the radius of a cartesian point
+ * 
+ * \tparam T type of the points x and y
+ * \param x coordinate
+ * \param y coordinate
+ * \retval return type deduced based on arguments
+ */
+template <typename T>
+auto calculate_radius(T&& x, T&& y) {
+    return std::sqrt(std::pow(x, 2.0) + std::pow(y, 2.0));
+}
+
+
 /**
  * \brief Construct a new application::application object
  * 
@@ -52,13 +67,15 @@ void application::update() {
 
     ofPixels& pixels = _image.getPixels();
     const auto width = _image.getWidth();
-    const auto height = _image.getHeight();        
+    const auto height = _image.getHeight();
+    ripple wave{255, 0.20, 0.1};
+     
     for ( uint64_t row = 0; row < height; row++ ) {
         for ( uint64_t column = 0; column < width; column++ ) {
             uint64_t x = std::llabs(column - _x_origin);
             uint64_t y = std::llabs(row - _y_origin);
-            auto r = sqrtf(powf(x, 2.0) + powf(y, 2.0));
-            pixels[row * static_cast<int>(width) + column] = (0.5*sin(0.20*r) + 0.5)*255;
+            auto r = calculate_radius(x, y);
+            pixels[row * static_cast<int>(width) + column] = wave.get_value(r, time);
         }
     }
     _image.update();    
@@ -75,7 +92,7 @@ void application::draw() {
     //!< start the shader
     _displacement_shader.begin();    
 
-    _displacement_shader.setUniform1f("u_scale", 50);
+    _displacement_shader.setUniform1f("u_scale", 100);
 
     //!< push the current local coordinate system to move to a new relative one
     ofPushMatrix();
