@@ -14,6 +14,10 @@
 /********************************** Includes *******************************************/
 #include <cmath>
 
+/********************************** Constants *******************************************/
+constexpr float pi = 3.1415926;
+constexpr float g = 9.81;
+
 /********************************** Functions *******************************************/
 /**
  * \brief function to create a normalized sin wave from 0 to 1
@@ -64,8 +68,10 @@ struct ripple {
      * \param time_sec time since the initial impulse
      * \retval float ripple output
      */
-    float get_value(float radius, float time_sec) {
-        return std::exp(-damping * time_sec) * normalized_sin(propagation * radius * normalized_cos(time_sec)) * impulse;
+    float get_value(float radius, float time_sec) {                
+        auto decay = std::exp(-damping * radius);
+        auto u = std::sqrt(2.0) * g * std::pow(time_sec, 2.0) / (4 * radius);        
+        return (1 - decay) * (impulse/std::pow(radius, 2.0)) * (u / pi) * normalized_cos(propagation * u + (pi/2));        
     }
 
     //!< Parameters

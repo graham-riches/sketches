@@ -44,7 +44,7 @@ application::application(int width, int height)
     _x_origin = width / 2;
     _y_origin = height / 2;
     _image.allocate(height, width, OF_IMAGE_GRAYSCALE);
-    _plane.set(1200, 900, height, height, OF_PRIMITIVE_TRIANGLES);
+    _plane.set(1200, 900, width, height, OF_PRIMITIVE_TRIANGLES);
     _plane.mapTexCoordsFromTexture(_image.getTexture());
 }
 
@@ -68,14 +68,14 @@ void application::update() {
     ofPixels& pixels = _image.getPixels();
     const auto width = _image.getWidth();
     const auto height = _image.getHeight();
-    ripple wave{255, 0.20, 0.1};
+    ripple wave{255, 0.01, 0.1};    
      
     for ( uint64_t row = 0; row < height; row++ ) {
         for ( uint64_t column = 0; column < width; column++ ) {
             uint64_t x = std::llabs(column - _x_origin);
             uint64_t y = std::llabs(row - _y_origin);
             auto r = calculate_radius(x, y);
-            pixels[row * static_cast<int>(width) + column] = wave.get_value(r, time);
+            pixels[row * static_cast<int>(width) + column] = ofClamp(wave.get_value(r, time), 0, 255);
         }
     }
     _image.update();    
@@ -92,7 +92,7 @@ void application::draw() {
     //!< start the shader
     _displacement_shader.begin();    
 
-    _displacement_shader.setUniform1f("u_scale", 100);
+    _displacement_shader.setUniform1f("u_scale", 200);
 
     //!< push the current local coordinate system to move to a new relative one
     ofPushMatrix();
