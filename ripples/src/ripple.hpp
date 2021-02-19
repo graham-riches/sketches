@@ -69,9 +69,9 @@ struct ripple {
      * \retval float ripple output
      */
     float get_value(float radius, float time_sec) {                
-        auto decay = std::exp(-damping * radius);
-        auto u = std::sqrt(2.0) * g * std::pow(time_sec, 2.0) / (4 * radius);        
-        return (1 - decay) * (impulse/std::pow(radius, 2.0)) * (u / pi) * normalized_cos(propagation * u + (pi/2));        
+        auto decay = std::exp(-damping * time_sec);
+        auto radial_damping = std::exp(-damping * radius);
+        return decay * radial_damping * normalized_sin(propagation * radius * normalized_cos(time_sec * decay)) * impulse;
     }
 
     //!< Parameters

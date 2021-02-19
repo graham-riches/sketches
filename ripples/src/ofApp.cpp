@@ -68,7 +68,7 @@ void application::update() {
     ofPixels& pixels = _image.getPixels();
     const auto width = _image.getWidth();
     const auto height = _image.getHeight();
-    ripple wave{255, 0.01, 0.1};    
+    ripple wave{255, 1, 0.1};    
      
     for ( uint64_t row = 0; row < height; row++ ) {
         for ( uint64_t column = 0; column < width; column++ ) {
