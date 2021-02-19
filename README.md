@@ -11,3 +11,7 @@ Uses OpenFrameworks OpenGL wrappers and some GLSL shader code to render a game o
 
 
 
+## Wireframe Ripple
+Rough hacked together wave/ripple model displayed as a wireframe graphic:
+
+![ripple](ripples/img/output.png)
