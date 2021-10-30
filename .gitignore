@@ -43,3 +43,6 @@
 
 # Rust things
 *target*
+
+# Sketches builds
+*cmake-build-deploy*

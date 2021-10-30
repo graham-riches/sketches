@@ -1,0 +1,20 @@
+[submodule "halloween/modules/rpi-rgb-led-matrix"]
+	path = halloween/modules/rpi-rgb-led-matrix
+	url = git@github.com:graham-riches/rpi-rgb-led-matrix.git
+	branch = master
+[submodule "halloween/modules/json"]
+	path = halloween/modules/json
+	url = https://github.com/nlohmann/json.git
+	branch = develop
+[submodule "halloween/modules/range-v3"]
+	path = halloween/modules/range-v3
+	url = https://github.com/ericniebler/range-v3.git
+	branch = master
+[submodule "halloween/modules/fmt"]
+	path = halloween/modules/fmt
+	url = https://github.com/fmtlib/fmt.git
+	branch = master
+[submodule "halloween/modules/bitmap"]
+	path = halloween/modules/bitmap
+	url = https://github.com/ArashPartow/bitmap.git
+	branch = master
