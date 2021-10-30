@@ -40,3 +40,6 @@
 
 # Visual Studio Stuff
 *.vs*
+
+# Rust things
+*target*
